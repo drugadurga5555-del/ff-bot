@@ -2,7 +2,7 @@ import telebot, requests, os
 from flask import Flask
 import threading
 
-TOKEN = "8994456344:AAFeBNAD_9GvZ8Osa54Dfp-QYeDWYtktiUM" # <-- yaha apna naya token dalna
+TOKEN = "8994456344:AAH5TsZg6bkcDJvdU3F3q6B2TctFQzfghho" # <-- yaha apna naya token dalna
 JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." # <-- apna JWT yaha dalna agar hai to
 
 bot = telebot.TeleBot(TOKEN)
