@@ -15,6 +15,8 @@ def home():
     return "Bot is Running!"
 
 def run_bot():
+    bot.remove_webhook()
+    time.sleep(2)
     bot.infinity_polling(skip_pending=True)
 
 threading.Thread(target=run_bot, daemon=True).start()
