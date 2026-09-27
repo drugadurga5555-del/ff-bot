@@ -2,7 +2,7 @@ import telebot, requests, os
 from flask import Flask
 import threading
 
-TOKEN = "8094465341:AAF-CpXnDm2RmXv92bB-PhBx2wVgxV_DJY" # apna token yahi rahega
+TOKEN = "8994456344:AAFeBNAD_9GvZ8Osa54Dfp-QYeDWYtktiUM" # apna token yahi rahega
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
