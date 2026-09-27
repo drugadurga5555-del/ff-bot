@@ -1,40 +1,46 @@
-import telebot, requests, os
-from flask import Flask
+import os
 import threading
+import requests
+import telebot
+from flask import Flask
 
 TOKEN = "8994456344:AAH5TsZg6bkcDJvdU3F3q6B2TctFQzfghho"
 API_KEY = "GtxRUZFiEbZkjtMDpGVCoWn0ZyMbCz_HKhCMuQTwSXI"
 
-bot = telebot.TeleBot(TOKEN)
-bot.delete_webhook(drop_pending_updates=True)
-
+bot = telebot.TeleBot(TOKEN, threaded=False)
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot Alive - Working"
+    return "Bot is Running!"
 
-def run_flask():
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+def run_bot():
+    bot.infinity_polling(skip_pending=True)
 
-threading.Thread(target=run_flask, daemon=True).start()
+threading.Thread(target=run_bot, daemon=True).start()
 
 @bot.message_handler(commands=['start'])
-def start(m):
-    bot.reply_to(m, "✅ Bot ON hai!\nUse: /info 3513765300")
+def start_cmd(m):
+    bot.reply_to(m, "✅ Bot ON Hai!\nUse: /info 3513765300")
 
 @bot.message_handler(func=lambda m: True)
-def handle(m):
-    txt = m.text.replace("/info","").replace("/start","").strip()
-    if not txt.isdigit():
+def handle_all(m):
+    text = m.text.strip()
+    uid = text.replace("/info", "").strip()
+    if not uid.isdigit():
+        bot.reply_to(m, "UID bhejo: /info 3513765300")
         return
-    uid = txt
-    bot.send_message(m.chat.id, f"🔍 Checking UID {uid}...")
     try:
-        # Try 1: GamesKinbo API
-        headers = {"X-API-Key": API_KEY, "api-key": API_KEY, "Authorization": API_KEY}
         url = f"https://api.gameskinbo.com/freefire/info?uid={uid}&region=ind"
+        headers = {"X-API-Key": API_KEY, "api-key": API_KEY}
         r = requests.get(url, headers=headers, timeout=20)
-        
-        if r.status_code == 200 and len(r.text) > 20 and "MAJOR_LOGIN_FAILED" not in r.text:
-            data = r.text
+        data = r.text
+        if len(data) > 4000:
+            data = data[:4000]
+        bot.reply_to(m, f"Result for {uid}:\n{data}")
+    except Exception as e:
+        bot.reply_to(m, f"Error: {e}")
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
